@@ -1,5 +1,5 @@
-@extends('layouts.plantilla');
-@section('contenido');
+@extends('layouts.plantilla')
+@section('contenido')
 
 <div class="container col-md-7">
 

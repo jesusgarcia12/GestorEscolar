@@ -49,7 +49,7 @@ class profesorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -70,8 +70,53 @@ class profesorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        //
+    {     //mostrar la materia a cursar
+        $materias= DB::table('materias')->get();
+        //dump($materias);
+
+        //crear un join para verificacion de las materias que se le asignen al profesor
+        $profeMateria = DB::table('materias')
+        ->join('profeMateria','profeMateria.idmateria','=','materias.id')
+        ->where('profeMateria.idUser','=',$id)->get();
+
+        //dump($materias,$profeMateria);
+
+        //validamos que exista la variable guardar y que tenga el valor de Si
+        //validar el arreglo idMat que no venga solo
+
+        if(isset($_GET['guardar']) && $_GET["guardar"]=="si" && !empty($_GET['idMat'])){
+            foreach( $_GET['idMat'] as $val){
+                
+                $resp = $profeMateria->where('idMateria',$val)->first();
+                if (!$resp){
+
+                    if(!empty($_GET['idMat'])){
+                        DB::table('profeMateria')->insert([
+                            'idUser'=>$id,
+                            'idMateria'=>$val
+                        ]);
+    
+                }
+                }
+
+        }
+        }
+        if (isset($_GET['eliminar']) && $_GET['eliminar']=="eliminar" && !empty($_GET['idMat'])){
+
+           if (!empty($_GET['idMat'])){
+            foreach($_GET['idMat'] as $val){
+                DB::table('profeMateria')
+                ->where('id','=',$val)
+                ->delete();
+            }
+
+           }
+        }
+           
+
+        return view('profe.edit',compact('materias','profeMateria'));
+
+        
     }
 
     /**
